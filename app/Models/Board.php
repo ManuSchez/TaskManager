@@ -16,4 +16,9 @@ class Board extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function columns()
+{
+    return $this->hasMany(Column::class);
+}
     }
