@@ -65,9 +65,9 @@ class BoardController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Board $board)
     {
-        //
+        return view('admin.boards.edit', compact('board'));
     }
 
     /**
@@ -75,7 +75,23 @@ class BoardController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $board = Board::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $board->update([
+            'name' => $request->name,
+        ]);
+
+        session()->flash('swal', [
+            'icon' => 'success',
+            'title' => '¡Bien hecho!',
+            'text' => 'Board actualizado exitosamente.',
+        ]);
+
+        return redirect()->route('admin.boards.index');
     }
 
     /**

@@ -18,10 +18,12 @@
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">{{ $board->name }}</h2>
                 <div class="flex space-x-2">
-                    <a href="{{ route('admin.boards.edit', $board) }}"
-                        class="btn btn-blue text-xs px-3 py-1 rounded hover:bg-blue-600 transition">
-                        Editar
-                    </a>
+                    <form class="edit_form" action="{{route('admin.boards.edit', $board)}}" method="GET">
+                        @csrf
+                        <button class="btn btn-blue text-xs px-3 py-1 rounded hover:bg-blue-600 transition">
+                            Editar
+                        </button>
+                    </form>
                     <form class="delete_form" action="{{ route('admin.boards.destroy', $board) }}" method="POST">
                         @csrf
                         @method('DELETE')
