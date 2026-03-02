@@ -10,6 +10,8 @@ class Column extends Model
     /** @use HasFactory<\Database\Factories\ColumnFactory> */
     use HasFactory;
 
+    protected $fillable = ['name', 'order', 'board_id'];
+
     public function board()
     {
         return $this->belongsTo(Board::class);
