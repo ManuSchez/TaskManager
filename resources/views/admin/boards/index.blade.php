@@ -13,11 +13,11 @@
                 {{-- Listado de Columnas --}}
                 <div class="flex flex-col gap-4">
                     @foreach ($board->columns as $column)
-                        @include('admin.boards.partials.column-item', ['column' => $column])
+                        @include('admin.columns.partials.column-item', ['column' => $column])
                     @endforeach
 
                     {{-- Formulario para crear columna --}}
-                    @include('admin.boards.partials.form-create-column', ['board' => $board])
+                    @include('admin.columns.partials.form-create-column', ['board' => $board])
                 </div>
             </div>
         @endforeach

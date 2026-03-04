@@ -10,7 +10,7 @@ class Column extends Model
     /** @use HasFactory<\Database\Factories\ColumnFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'order', 'board_id'];
+    protected $fillable = ['name', 'order', 'board_id', 'is_finished'];
 
     public function board()
     {

@@ -44,12 +44,6 @@ class BoardController extends Controller
             'user_id' => Auth::id(), // Asociar al usuario autenticado
         ]);
 
-        session()->flash('swal', [
-            'icon' => 'success',
-            'title' => '¡Bien hecho!',
-            'text' => 'Board creado exitosamente.',
-        ]);
-
         return redirect()->route('admin.boards.index');
     }
 
@@ -83,12 +77,6 @@ class BoardController extends Controller
 
         $board->update([
             'name' => $request->name,
-        ]);
-
-        session()->flash('swal', [
-            'icon' => 'success',
-            'title' => '¡Bien hecho!',
-            'text' => 'Board actualizado exitosamente.',
         ]);
 
         return redirect()->route('admin.boards.index');
