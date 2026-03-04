@@ -1,13 +1,16 @@
 <div class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl flex flex-col max-h-130 transition-opacity {{ $column->is_finished ? 'opacity-60' : '' }}"
-     x-data="{ isEditing: false, name: '{{ e($column->name) }}' }">
+     x-data="{ isEditing: false, name: '{{ e($column->name) }}', isHovered: false }">
     
     {{-- Header de la Columna --}}
-    <div class="p-3">
+    <div class="p-3" 
+         @mouseenter="isHovered = true" 
+         @mouseleave="isHovered = false">
+         
         {{-- Modo Lectura --}}
-        <div x-show="!isEditing" class="flex justify-between items-center">
-            <div class="flex items-center gap-2 overflow-hidden">
+        <div x-show="!isEditing" class="flex justify-between items-center min-h-[28px]">
+            <div class="flex items-center gap-2 overflow-hidden flex-1">
                 @if($column->is_finished)
-                    <span class="material-icons text-green-500 text-sm">check_circle</span>
+                    <span class="material-icons text-green-500 text-sm flex-shrink-0">check_circle</span>
                 @endif
                 <h3 @click="isEditing = true" 
                     class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 cursor-pointer hover:bg-zinc-200 dark:hover:bg-zinc-700 px-1 rounded transition {{ $column->is_finished ? 'line-through' : '' }} truncate">
@@ -15,26 +18,33 @@
                 </h3>
             </div>
 
-            <div class="flex items-center gap-1">
-                {{-- Botón Terminar/Reabrir --}}
+            {{-- Menú de Acciones --}}
+            <div class="flex items-center gap-1" 
+                 x-show="isHovered" 
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 translate-x-2"
+                 x-transition:enter-end="opacity-100 translate-x-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 x-cloak>
+                
                 <form action="{{ route('admin.columns.toggle-finished', $column) }}" method="POST">
                     @csrf
                     @method('PATCH')
-                    <button type="submit" class="hover:text-green-600 text-zinc-400 dark:text-zinc-500 transition" title="{{ $column->is_finished ? 'Reabrir' : 'Terminar' }}">
+                    <button type="submit" class="hover:text-green-600 text-zinc-400 dark:text-zinc-500 transition flex items-center" title="{{ $column->is_finished ? 'Reabrir' : 'Terminar' }}">
                         <span class="material-icons text-lg">{{ $column->is_finished ? 'history' : 'task_alt' }}</span>
                     </button>
                 </form>
 
-                {{-- Botón Editar (Activa Inline) --}}
-                <button @click="isEditing = true" class="hover:text-blue-500 text-zinc-400 dark:text-zinc-500 transition">
+                <button @click="isEditing = true" class="hover:text-blue-500 text-zinc-400 dark:text-zinc-500 transition flex items-center">
                     <span class="material-icons text-lg">edit</span>
                 </button>
 
-                {{-- Botón Eliminar --}}
-                <form action="{{ route('admin.columns.destroy', $column) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar esta columna y todas sus tareas?')">
+                <form action="{{ route('admin.columns.destroy', $column) }}" method="POST" class="delete_form">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="hover:text-red-500 text-zinc-400 dark:text-zinc-500 transition">
+                    <button type="submit" class="hover:text-red-500 text-zinc-400 dark:text-zinc-500 transition flex items-center">
                         <span class="material-icons text-lg">delete</span>
                     </button>
                 </form>
