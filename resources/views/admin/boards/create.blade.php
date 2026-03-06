@@ -37,4 +37,21 @@
             });
         </script>
     @endif
+
+    <form action="{{ route('admin.boards.store') }}" method="POST" class="space-y-4">
+    @csrf
+
+    <flux:input label="Nombre del Board" name="name" value="{{ old('name') }}" placeholder="Ej: Proyectos 2026" />
+
+    {{-- AÑADE ESTO --}}
+    <flux:select name="workspace_id" label="¿En qué espacio quieres crearlo?" placeholder="Selecciona un espacio...">
+        @foreach(auth()->user()->workspaces as $ws)
+            <flux:select.option value="{{ $ws->id }}">{{ $ws->name }}</flux:select.option>
+        @endforeach
+    </flux:select>
+
+    <div class="flex justify-end">
+        <flux:button type="submit" variant="primary">Crear</flux:button>
+    </div>
+</form>
 </x-layouts::app>

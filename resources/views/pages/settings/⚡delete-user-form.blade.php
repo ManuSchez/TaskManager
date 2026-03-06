@@ -6,13 +6,13 @@ new class extends Component {}; ?>
 
 <section class="mt-10 space-y-6">
     <div class="relative mb-5">
-        <flux:heading>{{ __('Delete account') }}</flux:heading>
-        <flux:subheading>{{ __('Delete your account and all of its resources') }}</flux:subheading>
+        <flux:heading>{{ __('Borrar perfil') }}</flux:heading>
+        <flux:subheading>{{ __('Una vez que se borre tu perfil, todos tus datos y recursos serán eliminados permanentemente.') }}</flux:subheading>
     </div>
 
     <flux:modal.trigger name="confirm-user-deletion">
         <flux:button variant="danger" data-test="delete-user-button">
-            {{ __('Delete account') }}
+            {{ __('Borrar cuenta') }}
         </flux:button>
     </flux:modal.trigger>
 

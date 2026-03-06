@@ -13,12 +13,18 @@ class Board extends Model
         'id',
         'name',
         'user_id',
+        'workspace_id',
         'created_at',
         'updated_at',
     ];
 
     public function columns()
-{
-    return $this->hasMany(Column::class);
-}
+    {
+        return $this->hasMany(Column::class);
     }
+
+    public function workspace()
+    {
+        return $this->belongsTo(Workspace::class);
+    }
+}

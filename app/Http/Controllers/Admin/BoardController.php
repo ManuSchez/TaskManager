@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Board;
+use App\Models\Workspace;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,19 +13,24 @@ class BoardController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(?Workspace $workspace = null)
     {
+        // Si $workspace no es null, filtramos.
         $boards = Board::with(['columns.tasks'])
+            ->when($workspace, function ($query) use ($workspace) {
+                $query->where('workspace_id', $workspace->id);
+            })
             ->orderBy('id', 'desc')
             ->paginate(10);
 
-        return view('admin.boards.index', compact('boards'));
+        return view('admin.boards.index', compact('boards', 'workspace'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create() {
+    public function create()
+    {
         return view('admin.boards.create');
     }
 
@@ -36,15 +42,17 @@ class BoardController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:boards,slug',
+            'workspace_id' => 'required|exists:workspaces,id', // Validamos que el espacio exista
         ]);
 
         $board = Board::create([
             'name' => $request->name,
-            'slug' => $request->slug,
-            'user_id' => Auth::id(), // Asociar al usuario autenticado
+            'slug' => \Illuminate\Support\Str::slug($request->name), // Generamos slug automático
+            'user_id' => Auth::id(),
+            'workspace_id' => $request->workspace_id, // Guardamos la relación
         ]);
 
-        return redirect()->route('admin.boards.index');
+        return redirect()->route('admin.boards.index')->with('success', 'Board creado con éxito');
     }
 
     /**

@@ -28,10 +28,10 @@ new class extends Component {
 <flux:modal name="confirm-user-deletion" :show="$errors->isNotEmpty()" focusable class="max-w-lg">
     <form method="POST" wire:submit="deleteUser" class="space-y-6">
         <div>
-            <flux:heading size="lg">{{ __('Are you sure you want to delete your account?') }}</flux:heading>
+            <flux:heading size="lg">{{ __('¿Estás seguro de que quieres borrar tu cuenta?') }}</flux:heading>
 
             <flux:subheading>
-                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+                {{ __('Una vez que se borre tu cuenta, todos tus datos y recursos serán eliminados permanentemente.') }}
             </flux:subheading>
         </div>
 
@@ -43,7 +43,7 @@ new class extends Component {
             </flux:modal.close>
 
             <flux:button variant="danger" type="submit" data-test="confirm-delete-user-button">
-                {{ __('Delete account') }}
+                {{ __('Borrar cuenta') }}
             </flux:button>
         </div>
     </form>

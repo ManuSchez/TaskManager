@@ -48,21 +48,21 @@ new #[Title('Password settings')] class extends Component {
         <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
             <flux:input
                 wire:model="current_password"
-                :label="__('Current password')"
+                :label="__('Contraseña actual')"
                 type="password"
                 required
                 autocomplete="current-password"
             />
             <flux:input
                 wire:model="password"
-                :label="__('New password')"
+                :label="__('Nueva contraseña')"
                 type="password"
                 required
                 autocomplete="new-password"
             />
             <flux:input
                 wire:model="password_confirmation"
-                :label="__('Confirm Password')"
+                :label="__('Confirmar nueva contraseña')"
                 type="password"
                 required
                 autocomplete="new-password"
@@ -71,12 +71,12 @@ new #[Title('Password settings')] class extends Component {
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
                     <flux:button variant="primary" type="submit" class="w-full" data-test="update-password-button">
-                        {{ __('Save') }}
+                        {{ __('Guardar') }}
                     </flux:button>
                 </div>
 
                 <x-action-message class="me-3" on="password-updated">
-                    {{ __('Saved.') }}
+                    {{ __('Contraseña actualizada') }}
                 </x-action-message>
             </div>
         </form>
