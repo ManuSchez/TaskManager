@@ -2,24 +2,13 @@
     'sidebar' => false,
 ])
 
-@if($sidebar)
-    <flux:sidebar.brand name="Task_Manager" {{ $attributes }}>
-        <x-slot name="logo">
-            <img 
-                src="{{ asset('images/Logo.png') }}" 
-                class="size-10 object-contain"
-                alt="Task_Manager Logo"
-            >
-        </x-slot>
-    </flux:sidebar.brand>
-@else
-    <flux:brand name="Task_Manager" {{ $attributes }}>
-        <x-slot name="logo">
-            <img 
-                src="{{ asset('images/Logo.png') }}" 
-                class="size-10 object-contain"
-                alt="Task_Manager Logo"
-            >
-        </x-slot>
-    </flux:brand>
-@endif
+<div {{ $attributes->merge(['class' => 'flex items-center gap-3']) }}>
+    <img 
+        src="{{ asset('images/Logo.png') }}" 
+        style="width: 60px !important; height: 48px !important; min-width: 48px !important;" 
+        class="object-contain" 
+        alt="Task_Manager Logo"
+    >
+    
+    <span class="font-bold text-xl dark:text-white">Task_Manager</span>
+</div>

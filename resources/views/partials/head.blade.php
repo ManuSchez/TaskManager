@@ -24,12 +24,10 @@
 @fluxAppearance
 
 <style>
-    /* Asegura que los componentes de Google usen la fuente de tu proyecto */
     md-filled-button, md-outlined-button, md-elevated-button, md-filled-tonal-button {
         font-family: 'Instrument Sans', sans-serif !important;
         --md-sys-font-label-large: 600 0.875rem 'Instrument Sans';
     }
-    /* Aplicar modo oscuro a componentes Material cuando el padre tenga la clase .dark */
     .dark md-filled-button, 
     .dark md-outlined-button, 
     .dark md-standard-icon-button {
@@ -38,7 +36,6 @@
         --md-sys-color-outline: #52525b;
     }
     
-    /* Ajuste específico para el icono de editar en dark mode */
     .dark .material-icons {
         color: #a1a1aa !important;
     }
