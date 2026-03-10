@@ -32,7 +32,9 @@ new #[Title('Profile settings')] class extends Component {
         $user = Auth::user();
         $validated = $this->validate($this->profileRules($user->id));
         $user->fill($validated);
-        if ($user->isDirty('email')) { $user->email_verified_at = null; }
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
         $user->save();
         $this->dispatch('profile-updated', name: $user->name);
     }
@@ -51,14 +53,13 @@ new #[Title('Profile settings')] class extends Component {
     #[Computed]
     public function hasUnverifiedEmail(): bool
     {
-        return Auth::user() instanceof MustVerifyEmail && ! Auth::user()->hasVerifiedEmail();
+        return Auth::user() instanceof MustVerifyEmail && !Auth::user()->hasVerifiedEmail();
     }
 
     #[Computed]
     public function showDeleteUser(): bool
     {
-        return ! Auth::user() instanceof MustVerifyEmail
-            || (Auth::user() instanceof MustVerifyEmail && Auth::user()->hasVerifiedEmail());
+        return !Auth::user() instanceof MustVerifyEmail || (Auth::user() instanceof MustVerifyEmail && Auth::user()->hasVerifiedEmail());
     }
 }; ?>
 
@@ -66,15 +67,18 @@ new #[Title('Profile settings')] class extends Component {
     @include('partials.settings-heading')
 
     <x-pages::settings.layout :heading="__('Perfil')" :subheading="__('Modifica tu información de perfil y tu dirección de correo electrónico.')" class="mt-6">
-        
+
         <div class="flex items-center gap-6 mb-8 mt-4">
             <flux:modal.trigger name="avatar-picker">
                 <div class="group relative size-24 cursor-pointer">
-                    <div class="size-24 overflow-hidden rounded-full border-4 border-white shadow-md dark:border-zinc-800">
-                        <img src="{{ auth()->user()->avatar_url }}" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110">
+                    <div
+                        class="size-11 overflow-hidden rounded-full border-4 border-white shadow-md dark:border-zinc-800">
+                        <img src="{{ auth()->user()->avatar_url }}"
+                            class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110">
                     </div>
-                    
-                    <div class="absolute inset-0 flex flex-col items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+
+                    <div
+                        class="absolute inset-0 flex flex-col items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                         <flux:icon name="pencil-square" variant="micro" class="text-white size-5 mb-0.5" />
                         <span class="text-white text-[10px] font-bold uppercase tracking-widest">Editar</span>
                     </div>
@@ -112,24 +116,29 @@ new #[Title('Profile settings')] class extends Component {
                 <flux:subheading>Selecciona una imagen</flux:subheading>
             </div>
 
-            <div class="flex flex-row gap-4 overflow-x-auto py-4 px-2 scrollbar-thin">
+            <div class="flex flex-row gap-3 overflow-x-auto pb-4 pt-1 px-1 items-center">
                 @php
                     $dir = public_path('images/avatares');
                     $files = is_dir($dir) ? glob($dir . '/*.{png,jpg,jpeg,svg,webp}', GLOB_BRACE) : [];
                 @endphp
 
-                @foreach($files as $file)
-                    @php 
+                @foreach ($files as $file)
+                    @php
                         $relPath = 'images/avatares/' . basename($file);
                         $active = auth()->user()->avatar === $relPath;
                     @endphp
 
-                    <button type="button" wire:click="updateAvatar('{{ $relPath }}')" class="relative shrink-0">
-                        <div class="size-14 overflow-hidden rounded-full border-2 transition-all {{ $active ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-transparent hover:border-zinc-300' }}">
+                    <button type="button" wire:click="updateAvatar('{{ $relPath }}')"
+                        class="relative shrink-0 transition-transform active:scale-90">
+                        <div
+                            class="size-10 overflow-hidden rounded-full border-2 transition-all 
+                            {{ $active ? 'border-indigo-500 ring-2 ring-indigo-100' : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-400' }}">
                             <img src="{{ asset($relPath) }}" class="h-full w-full object-cover">
                         </div>
-                        @if($active)
-                            <div class="absolute -bottom-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-indigo-500 text-white border border-white">
+
+                        @if ($active)
+                            <div
+                                class="absolute -bottom-0.5 -right-0.5 flex size-3.5 items-center justify-center rounded-full bg-indigo-500 text-white border border-white dark:border-zinc-900">
                                 <flux:icon name="check" variant="micro" class="size-2" />
                             </div>
                         @endif
@@ -137,6 +146,5 @@ new #[Title('Profile settings')] class extends Component {
                 @endforeach
             </div>
         </flux:modal>
-
     </x-pages::settings.layout>
 </section>

@@ -11,9 +11,6 @@
 
             <flux:input label="Nombre del Board" name="name" value="{{ old('name') }}" placeholder="Escribe el nombre del board" />
 
-            {{-- Opcional: si quieres mostrar el slug generado --}}
-            {{-- <flux:input label="Slug" name="slug" value="{{ old('slug') }}" readonly /> --}}
-
             <div class="flex justify-end">
                 <flux:button type="submit" variant="primary">
                     Crear
@@ -43,7 +40,6 @@
 
     <flux:input label="Nombre del Board" name="name" value="{{ old('name') }}" placeholder="Ej: Proyectos 2026" />
 
-    {{-- AÑADE ESTO --}}
     <flux:select name="workspace_id" label="¿En qué espacio quieres crearlo?" placeholder="Selecciona un espacio...">
         @foreach(auth()->user()->workspaces as $ws)
             <flux:select.option value="{{ $ws->id }}">{{ $ws->name }}</flux:select.option>
