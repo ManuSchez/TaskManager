@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\URL; // <--- IMPORTANTE: Añade esta línea
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Forzamos HTTPS en producción para evitar redirecciones fallidas en Render
+        if (app()->isProduction() || config('app.env') !== 'local') {
+            URL::forceScheme('https');
+        }
+
         $this->configureDefaults();
     }
 
