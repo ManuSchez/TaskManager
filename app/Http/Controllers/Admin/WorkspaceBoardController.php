@@ -6,17 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Workspace;
 use App\Models\Board;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class WorkspaceBoardController extends Controller
 {
     public function index(Workspace $workspace)
     {
-        // Esta línea es la clave:
-        // Al usar $workspace->boards(), Laravel aplica automáticamente el 
-        // "where('workspace_id', $workspace->id)" por ti.
+        // SEGURIDAD: Si el espacio no es del usuario logueado, portazo (403)
+        if ($workspace->user_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para ver este espacio.');
+        }
+
         $boards = $workspace->boards()
             ->with('columns')
-            ->latest() // Opcional: para ver los últimos creados primero
+            ->latest()
             ->paginate(10);
 
         return view('admin.workspaces.index', compact('workspace', 'boards'));
@@ -24,22 +28,23 @@ class WorkspaceBoardController extends Controller
 
     public function store(Request $request, $workspaceSlug)
     {
-        // 1. Buscamos el workspace manualmente por el slug
-        $workspace = Workspace::where('slug', $workspaceSlug)->firstOrFail();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
-        // 2. Validamos
+        // Buscamos el espacio, pero nos aseguramos de que sea del usuario
+        $workspace = $user->workspaces()->where('slug', $workspaceSlug)->firstOrFail();
+
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        // 3. Creamos el tablero
-        Board::create([
+        // Creamos el tablero a través del usuario para asegurar el user_id
+        $user->boards()->create([
             'name'         => $request->name,
+            'slug'         => Str::slug($request->name) . '-' . rand(1000, 9999),
             'workspace_id' => $workspace->id,
-            'user_id'      => auth()->id(),
         ]);
 
-        // 4. Redirigimos usando el slug
         return redirect()->route('workspaces.boards.index', $workspace->slug)
             ->with('success', '¡Tablero creado con éxito!');
     }

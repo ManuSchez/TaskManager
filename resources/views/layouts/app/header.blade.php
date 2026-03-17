@@ -29,7 +29,7 @@
             </a>
         </div>
 
-        {{-- NAVBAR PRINCIPAL --}}
+        {{-- NAVBAR PRINCIPAL (Escritorio) --}}
         <flux:navbar class="max-lg:hidden gap-6 ml-6">
             <flux:dropdown position="bottom" align="start">
                 <flux:button variant="ghost" icon-trailing="chevron-down">
@@ -40,22 +40,17 @@
                     <flux:menu.group heading="Secciones">
                         @forelse (auth()->user()->workspaces as $ws)
                             <div class="flex items-center justify-between w-full px-2 py-1.5 rounded-md hover:bg-zinc-200/50 dark:hover:bg-zinc-700/50 transition-colors">
-                                {{-- Enlace --}}
                                 <a href="{{ route('workspaces.boards.index', $ws->slug) }}" 
                                    wire:navigate
                                    class="text-sm font-medium text-zinc-800 dark:text-zinc-200 no-underline flex-1 truncate mr-2">
                                     {{ $ws->name }}
                                 </a>
-
                                 <div class="flex items-center gap-2 shrink-0">
-                                    {{-- Botón Editar --}}
                                     <button type="button"
                                         onclick="Livewire.dispatch('edit-workspace', { id: {{ $ws->id }} })"
                                         class="text-zinc-500 hover:text-blue-500 transition-colors p-1 cursor-pointer">
                                         <flux:icon name="pencil-square" variant="micro" />
                                     </button>
-
-                                    {{-- Botón Borrar (Ahora dispara SweetAlert) --}}
                                     <button type="button"
                                         onclick="window.dispatchEvent(new CustomEvent('trigger-delete-workspace', { detail: { id: {{ $ws->id }} } }))"
                                         class="text-zinc-500 hover:text-red-500 transition-colors p-1 cursor-pointer">
@@ -134,9 +129,50 @@
         class="lg:hidden border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.header>
             <x-app-logo />
-            <flux:sidebar.collapse />
+            <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
         </flux:sidebar.header>
+
         <flux:sidebar.nav>
+            {{-- SECCIÓN MIS ESPACIOS PARA MÓVIL IGUAL QUE EN PC --}}
+            <flux:sidebar.group heading="Mis Espacios">
+                @forelse (auth()->user()->workspaces as $ws)
+                    <div class="flex items-center justify-between w-full group relative mb-1">
+                        <flux:sidebar.item 
+                            icon="briefcase" 
+                            :href="route('workspaces.boards.index', $ws->slug)" 
+                            :current="request()->url() === route('workspaces.boards.index', $ws->slug)"
+                            wire:navigate
+                            class="flex-1 pr-16"> {{-- Espacio para que el texto no choque con los botones --}}
+                            {{ $ws->name }}
+                        </flux:sidebar.item>
+                        
+                        {{-- Acciones igual que en PC --}}
+                        <div class="absolute right-2 flex items-center gap-1">
+                            <button type="button" 
+                                onclick="Livewire.dispatch('edit-workspace', { id: {{ $ws->id }} })"
+                                class="p-2 text-zinc-400 hover:text-blue-500 transition-colors">
+                                <flux:icon name="pencil-square" variant="micro" />
+                            </button>
+                            <button type="button" 
+                                onclick="window.dispatchEvent(new CustomEvent('trigger-delete-workspace', { detail: { id: {{ $ws->id }} } }))"
+                                class="p-2 text-zinc-400 hover:text-red-500 transition-colors">
+                                <flux:icon name="trash" variant="micro" />
+                            </button>
+                        </div>
+                    </div>
+                @empty
+                    <flux:sidebar.item disabled>No hay espacios</flux:sidebar.item>
+                @endforelse
+
+                <flux:modal.trigger name="create-workspace">
+                    <flux:sidebar.item icon="plus" class="cursor-pointer text-indigo-600 dark:text-indigo-400">
+                        Nueva Sección
+                    </flux:sidebar.item>
+                </flux:modal.trigger>
+            </flux:sidebar.group>
+
+            <flux:separator class="my-4" />
+
             @foreach ($groups as $group => $links)
                 <flux:sidebar.group :heading="$group">
                     @foreach ($links as $link)
@@ -150,12 +186,13 @@
         </flux:sidebar.nav>
     </flux:sidebar>
 
-    {{ $slot }}
+    <main class="p-4 lg:p-8">
+        {{ $slot }}
+    </main>
 
     @fluxScripts
     <livewire:workspace-manager />
 
-    {{-- SCRIPTS DE SWEETALERT --}}
     <script>
         window.addEventListener('trigger-delete-workspace', event => {
             Swal.fire({
@@ -169,12 +206,10 @@
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Llama al método 'execute-delete-workspace' en WorkspaceManager.php
                     Livewire.dispatch('execute-delete-workspace', { id: event.detail.id });
                 }
             });
         });
     </script>
 </body>
-
 </html>

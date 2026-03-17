@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -63,6 +64,9 @@ class User extends Authenticatable
             ->implode('');
     }
 
+    /**
+     * Get the avatar URL
+     */
     public function getAvatarUrlAttribute(): string
     {
         return $this->avatar
@@ -70,8 +74,19 @@ class User extends Authenticatable
             : asset('images/avatares/avatar1.png');
     }
 
-    public function workspaces()
+    /**
+     * Relación: Un usuario tiene muchos espacios (Workspaces)
+     */
+    public function workspaces(): HasMany
     {
         return $this->hasMany(Workspace::class);
+    }
+
+    /**
+     * Relación: Un usuario tiene muchos tableros (Boards)
+     */
+    public function boards(): HasMany
+    {
+        return $this->hasMany(Board::class);
     }
 }
