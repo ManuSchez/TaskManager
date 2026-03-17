@@ -1,22 +1,22 @@
-# Usamos una imagen que soporte PHP 8.4
 FROM richarvey/nginx-php-fpm:3.1.6
 
-# Esta variable permite que composer corra sin quejarse de permisos
+# Instalamos Node para Vite
+RUN apk add --no-cache nodejs npm
+
 ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV WEBROOT /var/www/html/public
 
 COPY . .
 
-# Configuración de Laravel
-ENV ImageOS=alpine3.18
-ENV WEBROOT /var/www/html/public
-ENV PHP_UPLOAD_MAX_FILESIZE 10M
-ENV PHP_POST_MAX_SIZE 10M
-
-# Forzamos la instalación ignorando requisitos de plataforma
+# Instalamos todo
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
+RUN npm install && npm run build
 
-# Exponer el puerto
+# Script de inicio para migraciones
+RUN echo "#!/bin/sh" > /entrypoint.sh && \
+    echo "php /var/www/html/artisan migrate --force" >> /entrypoint.sh && \
+    echo "exec /start.sh" >> /entrypoint.sh && \
+    chmod +x /entrypoint.sh
+
 EXPOSE 80
-
-# Comando final (Ejecuta migraciones y arranca el servidor)
-CMD ["sh", "-c", "php artisan migrate --force && /start.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
