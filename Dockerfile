@@ -12,11 +12,11 @@ ENV WEBROOT /var/www/html/public
 ENV PHP_UPLOAD_MAX_FILESIZE 10M
 ENV PHP_POST_MAX_SIZE 10M
 
-# Forzamos la actualización de la plataforma para que acepte PHP 8.4
+# Forzamos la instalación ignorando requisitos de plataforma
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 # Exponer el puerto
 EXPOSE 80
 
-# Comando para arrancar
-CMD ["/start.sh"]
+# Comando final (Ejecuta migraciones y arranca el servidor)
+CMD ["sh", "-c", "php artisan migrate --force && /start.sh"]
