@@ -119,7 +119,13 @@ new #[Title('Profile settings')] class extends Component {
             <div class="flex flex-row gap-3 overflow-x-auto pb-4 pt-1 px-1 items-center">
                 @php
                     $dir = public_path('images/avatares');
-                    $files = is_dir($dir) ? glob($dir . '/*.{png,jpg,jpeg,svg,webp}', GLOB_BRACE) : [];
+                    $files = [];
+                    if (is_dir($dir)) {
+                        $allFiles = glob($dir . '/*');
+                        $files = array_filter($allFiles, function ($file) {
+                            return preg_match('/\.(png|jpg|jpeg|svg|webp)$/i', $file);
+                        });
+                    }
                 @endphp
 
                 @foreach ($files as $file)
