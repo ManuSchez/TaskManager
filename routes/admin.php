@@ -12,11 +12,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
 
 // Rutas de Workspaces (agrupadas para mantener orden)
 Route::prefix('workspaces')->name('workspaces.')->middleware(['auth', 'verified'])->group(function () {
+
+    Route::post('/boards/reorder', [WorkspaceBoardController::class, 'reorder'])
+        ->name('boards.reorder');
+
     Route::get('{workspace:slug}/boards', [WorkspaceBoardController::class, 'index'])
         ->name('boards.index');
-        
+
     Route::post('{workspace}/boards', [WorkspaceBoardController::class, 'store'])
-    ->name('boards.store');
+        ->name('boards.store');
 });
 
 // Rutas de columnas

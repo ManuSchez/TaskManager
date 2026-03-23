@@ -10,13 +10,12 @@ class Board extends Model
     /** @use HasFactory<\Database\Factories\BoardFactory> */
     use HasFactory;
     protected $fillable = [
-        'id',
-        'name',
-        'user_id',
-        'workspace_id',
-        'created_at',
-        'updated_at',
-    ];
+    'name',
+    'slug',
+    'user_id',
+    'workspace_id',
+    'position',
+];
 
     public function columns()
     {

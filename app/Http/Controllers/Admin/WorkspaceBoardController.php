@@ -13,15 +13,14 @@ class WorkspaceBoardController extends Controller
 {
     public function index(Workspace $workspace)
     {
-        // SEGURIDAD: Si el espacio no es del usuario logueado, portazo (403)
         if ($workspace->user_id !== Auth::id()) {
             abort(403, 'No tienes permiso para ver este espacio.');
         }
 
         $boards = $workspace->boards()
             ->with('columns')
-            ->latest()
-            ->paginate(10);
+            ->orderBy('position', 'asc')
+            ->get();
 
         return view('admin.workspaces.index', compact('workspace', 'boards'));
     }
@@ -31,21 +30,35 @@ class WorkspaceBoardController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // Buscamos el espacio, pero nos aseguramos de que sea del usuario
         $workspace = $user->workspaces()->where('slug', $workspaceSlug)->firstOrFail();
 
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        // Creamos el tablero a través del usuario para asegurar el user_id
-        $user->boards()->create([
+        $lastPosition = $workspace->boards()->max('position') ?? 0;
+
+        $workspace->boards()->create([
+            'user_id'      => $user->id,
             'name'         => $request->name,
-            'slug'         => Str::slug($request->name) . '-' . rand(1000, 9999),
-            'workspace_id' => $workspace->id,
+            'slug'         => Str::slug($request->name) . '-' . Str::lower(Str::random(4)),
+            'position'     => $lastPosition + 1,
         ]);
 
         return redirect()->route('workspaces.boards.index', $workspace->slug)
             ->with('success', '¡Tablero creado con éxito!');
     }
+
+    public function reorder(Request $request)
+{
+    $ids = $request->input('ids');
+
+    if ($ids && is_array($ids)) {
+        foreach ($ids as $index => $id) {
+            \App\Models\Board::where('id', $id)->update(['position' => $index + 1]);
+        }
+    }
+
+    return response()->json(['status' => 'success']);
+}
 }

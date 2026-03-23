@@ -1,5 +1,5 @@
 <div class="flex justify-between items-center mb-6">
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3 board-drag-handle cursor-grab active:cursor-grabbing">
         <div class="w-2 h-8 bg-blue-500 dark:bg-blue-400 rounded-full"></div>
         <h2 class="text-xl font-bold text-zinc-800 dark:text-white">{{ $board->name }}</h2>
     </div>
